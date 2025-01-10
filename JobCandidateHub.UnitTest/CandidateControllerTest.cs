@@ -1,14 +1,9 @@
 ﻿using JobCandidateHub.Controllers;
-using JobCandidateHub.Core.Interfaces;
-using JobCandidateHub.Repositories.Data;
 using JobCandidateHub.Services.Interfaces;
 using JobCandidateHub.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

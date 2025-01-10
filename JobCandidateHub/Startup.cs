@@ -1,19 +1,12 @@
 using JobCandidateHub.Repositories.Data;
-using JobCandidateHub.Repositories.Repositories;
 using JobCandidateHub.Services.Interfaces;
 using JobCandidateHub.Services.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JobCandidateHub
 {
@@ -29,7 +22,7 @@ namespace JobCandidateHub
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICandidateService, CandidateService>();
 
             services.AddDbContext<CandidateDbContext>(con => con.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -45,6 +38,12 @@ namespace JobCandidateHub
                 app.UseDeveloperExceptionPage();
             }
 
+            // Apply migrations automatically on startup
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<CandidateDbContext>();
+                dbContext.Database.Migrate(); // Apply migrations if any are pending
+            }
             app.UseRouting();
 
             app.UseAuthorization();

@@ -1,6 +1,5 @@
 ﻿using JobCandidateHub.Core.Entities;
 using JobCandidateHub.Repositories.Data;
-using JobCandidateHub.Repositories.Repositories;
 using JobCandidateHub.Services.Interfaces;
 using JobCandidateHub.Services.ViewModels;
 using Microsoft.EntityFrameworkCore;
