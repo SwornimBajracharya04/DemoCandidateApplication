@@ -15,6 +15,6 @@ namespace JobCandidateHub.Repositories.Data
 
         }
 
-        public DbSet<Candidate> CandidateRepository { get; set; }
+        public DbSet<Candidate> Candidate { get; set; }
     }
 }

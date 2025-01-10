@@ -20,16 +20,41 @@ namespace JobCandidateHub.Controllers
             _candidateService = candidateService;
         }
 
+        [HttpGet]
+        public string hello()
+        {
+            return "Hello World";
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Please enter Email Address");
+            }
+            var result = await _candidateService.GetCandidateByEmailAsync(email);
+            if (result == null)
+            {
+                return BadRequest("Candidate with Email Address not found");
+            }
+            return Ok(result);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate([FromBody] CandidateViewModel model)
         {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
             var result = await _candidateService.CreateOrUpdateCandidateAsync(model);
+            if (result == null)
+            {
+                return BadRequest("Fail to Create/Update Candidate. Email required.");
+            }
             return Ok(result);
-        }
-        [HttpGet]
-        public IActionResult hello()
-        {
-            return Ok("Hello World");
         }
     }
 }

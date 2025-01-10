@@ -21,11 +21,11 @@ namespace JobCandidateHub.Repositories.Repositories
 
         public async Task<Candidate> CreateOrUpdateAsync(Candidate candidate)
         {
-            var existingCandidate = await _context.CandidateRepository.FirstOrDefaultAsync(c => c.ID == candidate.ID);
+            var existingCandidate = await _context.Candidate.FirstOrDefaultAsync(c => c.ID == candidate.ID);
             
             if (existingCandidate == null)
             {
-                _context.CandidateRepository.Add(candidate);
+                _context.Candidate.Add(candidate);
             }
             else
             {
@@ -33,7 +33,7 @@ namespace JobCandidateHub.Repositories.Repositories
                 existingCandidate.LastName = candidate.LastName;
                 existingCandidate.PhoneNumber = candidate.PhoneNumber;
 
-                _context.CandidateRepository.Update(existingCandidate);
+                _context.Candidate.Update(existingCandidate);
             }
 
             await _context.SaveChangesAsync();

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobCandidateHub.Repositories.Migrations
 {
     [DbContext(typeof(CandidateDbContext))]
-    [Migration("20250110154110_InitialDB")]
-    partial class InitialDB
+    [Migration("20250110191244_initialdb")]
+    partial class initialdb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -57,7 +57,7 @@ namespace JobCandidateHub.Repositories.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("CandidateRepository");
+                    b.ToTable("Candidate");
                 });
 #pragma warning restore 612, 618
         }

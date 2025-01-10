@@ -55,7 +55,7 @@ namespace JobCandidateHub.Repositories.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("CandidateRepository");
+                    b.ToTable("Candidate");
                 });
 #pragma warning restore 612, 618
         }
