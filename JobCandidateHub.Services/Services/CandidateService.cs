@@ -18,7 +18,7 @@ namespace JobCandidateHub.Services.Services
         }
         public async Task<CandidateViewModel> CreateOrUpdateCandidateAsync(CandidateViewModel candidate)
         {
-            var existingCandidate = await _context.CandidateRepository.FirstOrDefaultAsync(c => c.ID == candidate.ID);
+            var existingCandidate = await _context.CandidateRepository.FirstOrDefaultAsync(c => c.Email == candidate.Email);
 
             if (existingCandidate == null)
             {
@@ -26,6 +26,9 @@ namespace JobCandidateHub.Services.Services
                 model.FirstName = candidate.FirstName;
                 model.LastName = candidate.LastName;
                 model.PhoneNumber= candidate.PhoneNumber;
+
+                model.Email= candidate.Email;
+                model.Comment = candidate.Comment;
 
                 await _context.CandidateRepository.AddAsync(model);
             }

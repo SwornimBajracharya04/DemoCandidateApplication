@@ -3,3 +3,11 @@
 ################################################################################
 
 /.vs/JobCandidateHub
+/JobCandidateHub/bin/Debug/net5.0
+/JobCandidateHub/obj
+/JobCandidateHub.Core/bin/Debug/net5.0
+/JobCandidateHub.Core/obj
+/JobCandidateHub.Repositories/bin/Debug/net5.0
+/JobCandidateHub.Tests/obj
+/JobCandidateHub.Repositories/obj/Debug/net7.0
+/JobCandidateHub.Repositories/obj/Debug/net9.0
