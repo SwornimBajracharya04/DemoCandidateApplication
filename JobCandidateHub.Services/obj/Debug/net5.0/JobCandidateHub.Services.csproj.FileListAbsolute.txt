@@ -1,0 +1,17 @@
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\JobCandidateHub.Services.deps.json
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\JobCandidateHub.Services.dll
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\ref\JobCandidateHub.Services.dll
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\JobCandidateHub.Services.pdb
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\JobCandidateHub.Core.dll
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\JobCandidateHub.Repositories.dll
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\JobCandidateHub.Repositories.pdb
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\bin\Debug\net5.0\JobCandidateHub.Core.pdb
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.csprojAssemblyReference.cache
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.AssemblyInfoInputs.cache
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.AssemblyInfo.cs
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.csproj.CoreCompileInputs.cache
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.csproj.CopyComplete
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.dll
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\ref\JobCandidateHub.Services.dll
+D:\Projects\JobCandidateHub\JobCandidateHub.Services\obj\Debug\net5.0\JobCandidateHub.Services.pdb

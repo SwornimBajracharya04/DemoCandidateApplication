@@ -52,7 +52,7 @@ namespace JobCandidateHub.Controllers
             var result = await _candidateService.CreateOrUpdateCandidateAsync(model);
             if (result == null)
             {
-                return BadRequest("Fail to Create/Update Candidate. Email required.");
+                return BadRequest("Fail to Create/Update Candidate. Email required. ");
             }
             return Ok(result);
         }

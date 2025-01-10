@@ -3,6 +3,7 @@ using JobCandidateHub.Core.Interfaces;
 using JobCandidateHub.Repositories.Data;
 using JobCandidateHub.Services.Interfaces;
 using JobCandidateHub.Services.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,6 @@ namespace JobCandidateHub.UnitTest
     public class CandidateControllerTest
     {
         private readonly Mock<ICandidateService> _mockService;
-        private readonly Mock<CandidateDbContext> _mockDbContext;
         private readonly CandidateController _candidateController;
 
         public CandidateControllerTest()
@@ -28,12 +28,12 @@ namespace JobCandidateHub.UnitTest
 
         private List<CandidateViewModel> CandidatesValue = new List<CandidateViewModel>()
         {
-            new CandidateViewModel{FirstName="Swornim", LastName="Bajracharya", PhoneNumber="123123", Email="", Comment="Hello World"}, //missing email
-            new CandidateViewModel{FirstName="Swornim", LastName="Bajracharya", PhoneNumber="123123", Email="swornim@asdf.com", Comment="Hello World"}, //good data
-            new CandidateViewModel{FirstName="asdf", LastName="Bajracharya", PhoneNumber="123123", Email="swornim@asdf.com", Comment="Hello World"}, //good update data
-            new CandidateViewModel{FirstName="Swornim", LastName="Bajracharya", PhoneNumber="123123", Email="swornim@asdf.com", Comment=""}, // missing required field
-            new CandidateViewModel{FirstName="Swornim", LastName="", PhoneNumber="", Email="swornim@asdf.com", Comment=""}, // missing required fields
-            new CandidateViewModel() // null value email
+            new CandidateViewModel{FirstName="Swornim", LastName="Bajracharya", PhoneNumber="123123", Email="", Comment="Hello World"}, //missing email 0
+            new CandidateViewModel{FirstName="Swornim", LastName="Bajracharya", PhoneNumber="123123", Email="swornim@asdf.com", Comment="Hello World"}, //good data 1
+            new CandidateViewModel{FirstName="asdf", LastName="Bajracharya", PhoneNumber="123123", Email="swornim@asdf.com", Comment="Hello World"}, //good update data 2
+            new CandidateViewModel{FirstName="Swornim", LastName="Bajracharya", PhoneNumber="123123", Email="swornim@asdf.com", Comment=""}, // missing required field 3
+            new CandidateViewModel{FirstName="Swornim", LastName="", PhoneNumber="", Email="swornim@asdf.com", Comment=""}, // missing required fields 4
+            new CandidateViewModel() // null value 5
         };
         [Fact]
         public void CandidateController_hello_ConnectionTest()
@@ -47,64 +47,139 @@ namespace JobCandidateHub.UnitTest
         }
 
         [Fact]
-        public async Task Create_ShouldReturnCandidate_WhenValidCandidateIsPassed()
+        public async Task CreateOrUpdate_ReturnsBadRequest_WhenModelIsNull()
         {
-            // Arrange
-            var candidate = CandidatesValue[1];
-            _mockService.Setup(repo => repo.CreateOrUpdateCandidateAsync(candidate)).ReturnsAsync(candidate);
-
             // Act
-            var result = await _candidateController.GetByEmail(candidate.Email);
+            var result = await _candidateController.CreateOrUpdate(null);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(candidate.FirstName, result.ToString());
-            _mockService.Verify(repo => repo.CreateOrUpdateCandidateAsync(It.IsAny<CandidateViewModel>()), Times.Once);
+            Assert.IsType<BadRequestResult>(result);
         }
 
-        //[Fact]
-        //public async Task Create_ShouldThrowArgumentNullException_WhenCandidateIsNull()
-        //{
-        //    // Act & Assert
-        //    await Assert.ThrowsAsync<ArgumentNullException>(() => _candidateService.CreateOrUpdateCandidateAsync(null));
-        //}
+        [Fact]
+        public async Task CreateOrUpdate_ReturnsBadRequest_WhenEmailIsMissing()
+        {
+            // Arrange
+            var model = CandidatesValue[0];
 
-        //[Fact]
-        //public async Task Update_ShouldReturnUpdatedCandidate_WhenValidCandidateIsPassed()
-        //{
-        //    // Arrange
-        //    var candidate = new CandidateViewModel { Id = 1, Name = "John Doe", Email = "john@example.com" };
-        //    var updatedCandidate = new CandidateViewModel { Id = 1, Name = "John Doe Updated", Email = "john.updated@example.com" };
+            // Act
+            var result = await _candidateController.CreateOrUpdate(model);
 
-        //    _mockRepo.Setup(repo => repo.GetById(candidate.Id)).Returns(candidate);
-        //    _mockRepo.Setup(repo => repo.CreateOrUpdateCandidateAsync(updatedCandidate)).ReturnsAsync(updatedCandidate);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Fail to Create/Update Candidate. Email required. ", badRequestResult.Value);
+        }
 
-        //    // Act
-        //    var result = await _candidateService.CreateOrUpdateCandidateAsync(updatedCandidate);
+        [Fact]
+        public async Task CreateOrUpdate_ReturnsOk_WhenCandidateCreatedOrUpdated()
+        {
+            // Arrange
+            var model = CandidatesValue[1];
+            _mockService.Setup(service => service.CreateOrUpdateCandidateAsync(model))
+                                 .ReturnsAsync(model);
 
-        //    // Assert
-        //    Assert.NotNull(result);
-        //    Assert.Equal(updatedCandidate.FirstName, result.FirstName);
-        //    _mockRepo.Verify(repo => repo.CreateOrUpdateCandidateAsync(It.IsAny<CandidateViewModel>()), Times.Once);
-        //}
+            // Act
+            var result = await _candidateController.CreateOrUpdate(model);
 
-        //[Fact]
-        //public void Update_ShouldThrowInvalidOperationException_WhenCandidateNotFound()
-        //{
-        //    // Arrange
-        //    var candidate = new CandidateViewModel {  FirstName = "Non Existing Candidate", Email = "nonexistent@example.com" };
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(model, okResult.Value);
+        }
 
-        //    //_mockRepo.Setup(repo => repo.GetById(candidate.Id)).Returns((CandidateViewModel)null);
+        [Fact]
+        public async Task CreateOrUpdate_ReturnsBadRequest_WhenCreateOrUpdateFails()
+        {
+            // Arrange
+            var model = CandidatesValue[5];
+            _mockService.Setup(service => service.CreateOrUpdateCandidateAsync(model))
+                                 .ReturnsAsync((CandidateViewModel)null);
 
-        //    // Act & Assert
-        //    Assert.ThrowsAsync<InvalidOperationException>(() => _candidateService.CreateOrUpdateCandidateAsync(candidate));
-        //}
+            // Act
+            var result = await _candidateController.CreateOrUpdate(model);
 
-        //[Fact]
-        //public void Update_ShouldThrowArgumentNullException_WhenCandidateIsNull()
-        //{
-        //    // Act & Assert
-        //    Assert.ThrowsAsync<ArgumentNullException>(() => _candidateService.CreateOrUpdateCandidateAsync(null));
-        //}
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Fail to Create/Update Candidate. Email required. ", badRequestResult.Value);
+        }
+        [Fact]
+        public async Task GetByEmail_ReturnsBadRequest_WhenEmailIsNull()
+        {
+            // Act
+            var result = await _candidateController.GetByEmail(null);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Please enter Email Address", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetByEmail_ReturnsBadRequest_WhenCandidateNotFound()
+        {
+            // Arrange
+            var email = "test@example.com";
+            _mockService.Setup(service => service.GetCandidateByEmailAsync(email))
+                                 .ReturnsAsync((CandidateViewModel)null);
+
+            // Act
+            var result = await _candidateController.GetByEmail(email);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Candidate with Email Address not found", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetByEmail_ReturnsOk_WhenCandidateFound()
+        {
+            // Arrange
+            var email = "test@example.com";
+            var candidate = new CandidateViewModel { Email = email };
+            _mockService.Setup(service => service.GetCandidateByEmailAsync(email))
+                                 .ReturnsAsync(candidate);
+
+            // Act
+            var result = await _candidateController.GetByEmail(email);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(candidate, okResult.Value);
+        }
+
+        [Fact]
+        public async Task CreateOrUpdate_ReturnsBadRequest_WhenEmailIsInvalid()
+        {
+            // Arrange: Create a CandidateViewModel with an invalid Email format
+            var model = new CandidateViewModel { FirstName = "John", LastName = "Doe", Email = "invalid-email", Comment = "Test comment" };
+
+            // Act: Call the CreateOrUpdate action with the invalid email
+            var result = await _candidateController.CreateOrUpdate(model);
+
+            // Assert: Check that the result is a BadRequest
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Contains("Email", badRequestResult.Value.ToString());
+        }
+
+        [Fact]
+        public async Task CreateOrUpdate_ReturnsOk_WhenAllRequiredFieldsAreValid()
+        {
+            // Arrange: Create a valid CandidateViewModel with all required fields
+            var model = new CandidateViewModel
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "test@example.com",
+                Comment = "Test comment"
+            };
+            var updatedCandidate = new CandidateViewModel { FirstName = "John", LastName = "Doe", Email = "test@example.com", Comment = "Test comment" };
+            _mockService.Setup(service => service.CreateOrUpdateCandidateAsync(model))
+                                 .ReturnsAsync(updatedCandidate);
+
+            // Act: Call the CreateOrUpdate action with a valid model
+            var result = await _candidateController.CreateOrUpdate(model);
+
+            // Assert: Check that the result is an OkObjectResult with the updated candidate
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(updatedCandidate, okResult.Value);
+        }
     }
 }
